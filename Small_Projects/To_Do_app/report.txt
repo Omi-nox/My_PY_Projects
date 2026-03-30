@@ -1,4 +1,0 @@
-1. make view task
-2. make add task
-3. make delete task
-4. make exit option
