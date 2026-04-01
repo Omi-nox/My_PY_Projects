@@ -135,8 +135,12 @@ def show_menu():
     print("3 - Delete task")
     print("4 - Delete File")
     print("5 - Quit")
-    choice=int(input('\nEnter choice\n'))
-    return choice
+    choice=(input('\nEnter choice\n')).strip() # direct int krny sy wo empty ko handle nhi krtpa or value error deta hs isliya phle str then int
+    # print(type(choice))
+    if not choice:
+        raise KeyboardInterrupt("\napp message : No input provided or being left epmty\n")
+    
+    return int(choice)
    
 # # # 
 # show_menu()
@@ -144,21 +148,26 @@ def show_menu():
 # view()
 read_file()
 while True:
-    chc=show_menu()
-    match chc:
-        case 1:
+    try:
+        chc=show_menu()
+        match chc:
+            case 1:
     
-           view()
-        case 2:
+                view()
+            case 2:
            
-           adding()
-        case 3:
-            deleting()
-        case 4:
-            file_deletion()
-        case 5:
-            print('good to see you , Bye!!!')
-            break
-        case _:
-            print("Unknown status")
+                adding()
+            case 3:
+                deleting()
+            case 4:
+                file_deletion()
+            case 5:
+                print('good to see you , Bye!!!')
+                break
+            case _:
+                print("Unknown status : enter NUMBER (1-5) can be accepted")
+    except KeyboardInterrupt as e:
+        print(e)
+    except ValueError as e:
+        print(e,"\nApp Error: enter NUMBER (1-5) can be accepted, ABC or string lietral not worked!\n")
 
