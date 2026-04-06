@@ -1,6 +1,7 @@
 # later jb ayi exception handle krli iski
 #file opening with path
 from pathlib import Path
+from datetime import datetime
 import time
 folder=Path('To_Do_app')
 my_path = folder/"report.txt"
@@ -32,9 +33,11 @@ def read_file():
                         # print('it is fucking good',type(num))
                         n1=int(num)
                         # print(type(n1))
-                        task_no=n1                 
-    print(f'final last task no is  {task_no}')
-
+                        task_no=n1     
+    if not (my_path.exists()):
+       pass
+    else:
+        print(f'final last task no is  {task_no}')
 def deleting():
     new_data=None
     choice=(input('\nenter task no for deleting\n')) 
@@ -83,14 +86,20 @@ def deleting():
 
 def adding_appending():
     global task_no
+    now=datetime.now()
+    now=now.strftime("%H : %M")
+
     read_file()
     task_no+=1
     if (my_path.exists()):
         print(f'appending method called and task_no is {task_no}')
         tsk=inputting()
         with open(folder/'report.txt','a') as f:
-            f.write(f'{str(task_no)}. {tsk}.\n')
+            f.write(f'{str(task_no)}. {tsk}         |    {now}.\n')
 def file_deletion():
+    global task_no
+    task_no=1
+    print('before deletion,',task_no,' is ')
     if not (my_path.exists()):
         print('\nfile does not exist!!!!\n')
     else:
@@ -98,11 +107,14 @@ def file_deletion():
 
 def adding():
     global task_no
+    now=datetime.now()
+    now=now.strftime("%H : %M pm")
+
     if not (my_path.exists()):
         tks=inputting()
         with open(folder/'report.txt','w') as f:
             print('\ntask added successfully......\n')
-            f.write(f'{str(task_no)}. {tks}.\n')
+            f.write(f'{str(task_no)}. {tks}         |    {now}.\n')
             task_no+=1
     else:
       adding_appending()
@@ -130,29 +142,38 @@ def view():  #viewinf file content
 
 
 def show_menu():
-    print("TO-DO LIST APP")
-    print("1 - View tasks")
-    print("2 - Add task")
-    print("3 - Delete task")
-    print("4 - Delete File")
-    print("5 - Quit")
+    print('-------------------')
+    print("TO-DO LIST APP     |")
+    print("1 - View tasks     |")
+    print("2 - Add task       |")
+    print("3 - Delete task    |")
+    print("4 - Delete File    |")
+    print("5 - Quit           |")
+    print('-------------------')
     choice=(input('\nEnter choice\n')).strip() # direct int krny sy wo empty ko handle nhi krtpa or value error deta hs isliya phle str then int
     # print(type(choice))
     if not choice:
         raise KeyboardInterrupt("\napp message : No input provided or being left epmty\n")
     
     return int(choice)
-   
+
+
+
 # # # 
 # show_menu()
 # file_checking()
 # view()
-print
-read_file()
-for i in range(20):
+
+print('loading...')
+for i in range(40):
     print('-',end='')
-    time.sleep(0.1)
-time.sleep(5)
+    time.sleep(0.05)
+print()
+print("Welcome to the TO-DO APP!!!!")
+time.sleep(2)
+
+read_file()
+
 while True:
     try:
         chc=show_menu()
