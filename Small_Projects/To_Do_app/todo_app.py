@@ -1,6 +1,7 @@
 # later jb ayi exception handle krli iski
 #file opening with path
 from pathlib import Path
+import time
 folder=Path('To_Do_app')
 my_path = folder/"report.txt"
 task_no=1
@@ -146,7 +147,12 @@ def show_menu():
 # show_menu()
 # file_checking()
 # view()
+print
 read_file()
+for i in range(20):
+    print('-',end='')
+    time.sleep(0.1)
+time.sleep(5)
 while True:
     try:
         chc=show_menu()
