@@ -151,7 +151,6 @@ questions = [
         "options": ["A. Men in Black", "B. Star Wars", "C. Terminator", "D. Predator"],
         "answer": "A"
     },
-    # --- 50 POORE KARNE KE LIYE NAYE QUESTIONS ---
     {
         "question": "Which sniper rifle in Call of Duty is famous for performing 'one-shot kills' and quickscopes?",
         "options": ["A. Intervention", "B. XPR-50", "C. Dragunov", "D. Outlaw"],
@@ -251,8 +250,134 @@ questions = [
         "question": "In the series 'The Boys', what is the name of the chemical substance that gives humans superpowers?",
         "options": ["A. Mutant Serum", "B. Compound V", "C. Super-Soldier Serum", "D. Project Extis"],
         "answer": "B"
+    },
+    # 25 NEW QUESTIONS (total 75)
+    {
+        "question": "Which game franchise features the character 'Captain Price' prominently?",
+        "options": ["A. Halo", "B. Call of Duty", "C. Battlefield", "D. Medal of Honor"],
+        "answer": "B"
+    },
+    {
+        "question": "What is the name of the iconic zombie map in Call of Duty: Black Ops that features the band members?",
+        "options": ["A. Kino der Toten", "B. Five", "C. Ascension", "D. Call of the Dead"],
+        "answer": "A"
+    },
+    {
+        "question": "Which firearm is known as the 'Browning Auto-5'?",
+        "options": ["A. Shotgun", "B. Rifle", "C. Machine Gun", "D. Pistol"],
+        "answer": "A"
+    },
+    {
+        "question": "In the movie 'Heat', which two legendary actors face off in the famous shootout scene?",
+        "options": ["A. Al Pacino & Robert De Niro", "B. Brad Pitt & Leonardo DiCaprio", "C. Denzel Washington & Tom Hanks", "D. Matt Damon & Ben Affleck"],
+        "answer": "A"
+    },
+    {
+        "question": "Which World War II tank was known as the 'Tiger'?",
+        "options": ["A. German Panzer VI", "B. Soviet T-34", "C. American Sherman", "D. British Churchill"],
+        "answer": "A"
+    },
+    {
+        "question": "What does 'SMG' stand for in firearms?",
+        "options": ["A. Small Machine Gun", "B. Sub-Machine Gun", "C. Semi-automatic Machine Gun", "D. Special Military Gun"],
+        "answer": "B"
+    },
+    {
+        "question": "Which Call of Duty game introduced the 'Pick 10' create-a-class system?",
+        "options": ["A. Black Ops 2", "B. Modern Warfare 3", "C. Black Ops 1", "D. Ghosts"],
+        "answer": "A"
+    },
+    {
+        "question": "Who is the main antagonist in 'Call of Duty: Modern Warfare 2' (2009)?",
+        "options": ["A. General Shepherd", "B. Vladimir Makarov", "C. Imran Zakhaev", "D. Raul Menendez"],
+        "answer": "A"
+    },
+    {
+        "question": "What is the name of the fictional country in the rebooted 'Call of Duty: Modern Warfare' (2019)?",
+        "options": ["A. Urzikstan", "B. Verdansk", "C. Kastovia", "D. Al-Qatala"],
+        "answer": "A"
+    },
+    {
+        "question": "Which handgun was standard issue for the US military from 1985 to 2017?",
+        "options": ["A. SIG M17", "B. Glock 19", "C. Beretta M9", "D. Colt M1911"],
+        "answer": "C"
+    },
+    {
+        "question": "What caliber is the M2 Browning heavy machine gun?",
+        "options": ["A. .50 BMG", "B. .30-06 Springfield", "C. 7.62×51mm", "D. 5.56×45mm"],
+        "answer": "A"
+    },
+    {
+        "question": "Which movie features the famous line 'You can't handle the truth!'?",
+        "options": ["A. A Few Good Men", "B. Top Gun", "C. Full Metal Jacket", "D. Platoon"],
+        "answer": "A"
+    },
+    {
+        "question": "In 'Saving Private Ryan', which character is the sniper?",
+        "options": ["A. Private Jackson", "B. Private Reiben", "C. Private Mellish", "D. Captain Miller"],
+        "answer": "A"
+    },
+    {
+        "question": "Which battle is considered the largest tank battle in history?",
+        "options": ["A. Battle of Kursk", "B. Battle of the Bulge", "C. Battle of El Alamein", "D. Battle of Stalingrad"],
+        "answer": "A"
+    },
+    {
+        "question": "What is the primary explosive compound used in C-4?",
+        "options": ["A. RDX", "B. TNT", "C. Nitroglycerin", "D. PETN"],
+        "answer": "A"
+    },
+    {
+        "question": "Which Call of Duty title first introduced exoskeleton movement (Exo Suit)?",
+        "options": ["A. Advanced Warfare", "B. Infinite Warfare", "C. Black Ops 3", "D. Ghosts"],
+        "answer": "A"
+    },
+    {
+        "question": "In the 'John Wick' series, what is the name of the hotel that serves as neutral ground for assassins?",
+        "options": ["A. The High Table", "B. The Continental", "C. The Syndicate", "D. The Camorra"],
+        "answer": "B"
+    },
+    {
+        "question": "Which weapon is also known as the 'Ma Deuce'?",
+        "options": ["A. M2 Browning", "B. M249 SAW", "C. M240B", "D. M60"],
+        "answer": "A"
+    },
+    {
+        "question": "What does the 'AR' in 'AR-15' stand for?",
+        "options": ["A. Assault Rifle", "B. Automatic Rifle", "C. ArmaLite Rifle", "D. Advanced Rifle"],
+        "answer": "C"
+    },
+    {
+        "question": "Which movie features the US Navy's 'Top Gun' flight school?",
+        "options": ["A. Top Gun", "B. Iron Eagle", "C. Stealth", "D. Flight of the Intruder"],
+        "answer": "A"
+    },
+    {
+        "question": "In 'Call of Duty: Black Ops Cold War', which character returns as a playable operator?",
+        "options": ["A. Frank Woods", "B. Alex Mason", "C. Jason Hudson", "D. Viktor Reznov"],
+        "answer": "A"
+    },
+    {
+        "question": "Which German WWII machine gun was known as 'Hitler's Buzzsaw'?",
+        "options": ["A. MG34", "B. MG42", "C. FG42", "D. MP40"],
+        "answer": "B"
+    },
+    {
+        "question": "What is the effective firing range of an M16 assault rifle (approx)?",
+        "options": ["A. 300 m", "B. 550 m", "C. 800 m", "D. 1200 m"],
+        "answer": "B"
+    },
+    {
+        "question": "Which video game series features the 'Battlefield' franchise?",
+        "options": ["A. EA DICE", "B. Activision", "C. Ubisoft", "D. Bethesda"],
+        "answer": "A"
+    },
+    {
+        "question": "In 'The Dark Knight', what is the make of the Batmobile?",
+        "options": ["A. Lamborghini", "B. Tumbler (custom)", "C. Ferrari", "D. Porsche"],
+        "answer": "B"
     }
-]
+];
 
 class MyCustomError(Exception):
     pass
