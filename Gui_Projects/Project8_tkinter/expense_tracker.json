@@ -1,0 +1,26 @@
+[
+    {
+        "desc": "mech keyboard",
+        "category": "tech",
+        "amount": 4000.0,
+        "date": "2026-06-06 17:40"
+    },
+    {
+        "desc": "colt m1911",
+        "category": "guns",
+        "amount": 3500.0,
+        "date": "2026-06-06 17:40"
+    },
+    {
+        "desc": "medal of honor",
+        "category": "games",
+        "amount": 4500.0,
+        "date": "2026-06-06 17:42"
+    },
+    {
+        "desc": "battlefield 3",
+        "category": "games",
+        "amount": 1500.0,
+        "date": "2026-06-06 17:49"
+    }
+]
