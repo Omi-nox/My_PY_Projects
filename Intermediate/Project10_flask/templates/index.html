@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager by Flask</title>
+</head>
+<body>
+    
+<style>
+        /* Base Settings */
+    
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #121214; 
+            color: #e2e8f0; 
+            padding: 40px;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .c1{
+          
+            max-width: 900px;
+            width: 100%;
+            
+        }
+        /* Typography */
+        h1 { 
+            color: #ffffff; 
+            font-size: 2rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .task-count {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        /* Form Styling */
+        .task-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .input-field {
+            flex: 1;
+            padding: 12px 16px; 
+            border-radius: 8px; 
+            border: 1px solid #2d3748; 
+            background: #1a202c; 
+            max-width: 900px;
+            width: 100%;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .input-field:focus {
+            border-color: #3b82f6;
+        }
+
+        /* List Styling */
+
+        ul { 
+            
+            list-style: none;
+             padding: 0;
+             margin: 0;
+             max-width: 900px;
+             width: auto;
+             display: flex;
+             flex-direction: column;
+            } 
+        
+        li { 
+            background: #1a202c; 
+            padding: 14px 20px; 
+            margin-bottom: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #2d3748;
+            display: flex;
+            align-items: center;
+            max-width: 800px;
+            width: auto;
+            justify-content: space-between;
+        }
+
+         .task-text {
+            font-size: 1rem;
+            color: #e2e8f0;
+        } 
+
+        /* Action Buttons Container */
+        /* .actions {
+            display: flex;
+            gap: 8px;
+        } */
+
+        /* Universal Button Styling */
+        .btn {
+            padding: 10px 16px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .actions{
+            margin:10px 5px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        /* Button Colors */
+        .btn-add { background: #3b82f6; color: white; }
+        .btn-add:hover { background: #2563eb; }
+
+        .btn-show { background: #475569; color: #f8fafc; }
+        .btn-show:hover { background: #334155; }
+
+        .btn-save { background: #10b981; color: white; }
+        .btn-save:hover { background: #059669; }
+
+        .btn-delete { background: #ef4444; color: white; margin: 5px 5px; padding: 3px 3px;}
+        .btn-delete:hover { background: #dc2626; }
+            @media (max-width:468px){
+            .c1{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: auto;
+                text-align: center;
+                color: blueviolet;
+                border: 2px solid yellow;
+            }
+        }
+       .alert-success {
+        background-color: #065f46; /* Clean Dark Green */
+        color: #34d399; /* Light Green Text */
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border: 1px solid #047857;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+      
+    </style>
+</head>
+<body>
+    <div class="c1">     
+    <h1>📝 My Task Manager</h1>
+    <p class="task-count">Total tasks available: <strong>{{ lent }}</strong> <i style="color: #047857;">{{msg}}</i></p>
+    
+        
+    </div>
+    
+    <!-- Add Task Form -->
+    <form action="/add" method="POST" class="task-form">
+        <input 
+            type="text" 
+            name="task" 
+            placeholder="What needs to be done?" 
+            class="input-field"
+            required
+        >
+        <button type="submit" class="btn btn-add">
+            ➕ Add Task
+           
+        </button>
+    </form>
+     <!-- Action Buttons -->
+                <div class="actions">
+                    <form action="/show" method="POST" >
+                     <button class="btn btn-show" name="show">👁️ Show</button>
+                    </form>
+                   <form action="/save"method='POST'><button type="submit" class="btn btn-save">💾 Save Changes</button></form>
+                 </div>
+    
+                 <!-- 🔔 Jinja Message Receiver -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-success">
+                    ✨ {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <!-- Task List -->
+    <ul>
+        {% for task in tasks %}
+            <li>
+                <span class="task-text">
+                    <strong>{{ loop.index }}.</strong> {{ task['task'] }}   <div style=" margin-left: 50px; padding-right: 20px; color: #94a3b8; font-weight: 600; display: inline-flex; ">
+        added at | {{ task['time'] }}
+    </div> <form action="/delete/{{ loop.index0 }}" method="POST">
+    <button type="submit" class="btn btn-delete">Delete 🗑️</button>
+</form> 
+ <!-- delete button  -->
+                </span>
+                
+                
+            </li>
+        {% endfor %}
+    </ul>
+    
+
+</body>
+</html>
+
+    
