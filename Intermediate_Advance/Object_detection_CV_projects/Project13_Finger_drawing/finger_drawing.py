@@ -29,6 +29,7 @@ thickness = 5
 print("✅ Finger Drawing Started!")
 print("Draw with INDEX finger")
 print("Press C to clear | Press Q to quit")
+c1=None
 while True:
     ret,frame= cap.read()
     if not ret:
@@ -80,7 +81,7 @@ while True:
         print(f'your thumb finger values x cordinates is : {x},your index finger value y cordinates is : {y}')
         distance=np.hypot(x-x1,y-y2)
         print(f'the Euclidean distance is  : {distance}')
-        if distance<80:
+        if distance<35:
            # Click confirm karne ke liye screen par text dikha sakte hain
             cv2.putText(frame, "Drawing Mode ON", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
             # draw line from previous position to current
@@ -94,16 +95,27 @@ while True:
         
        
     else:
-        pre_x,pre_y=None,None   
-    cv2.putText(frame, "R=Red G=Green B=Blue G=White S=save Q=Quit",
+        pre_x,pre_y=None,None  
+    if c1=='red':
+        cv2.putText(frame, "R=Red",
+            (80, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2) 
+        cv2.putText(frame, "G=Green B=Blue G=White S=save Q=Quit",
+            (150, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2) 
+    else:
+        cv2.putText(frame, "R=Red G=Green B=Blue G=White S=save Q=Quit",
             (80, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2)  
     combined=cv2.addWeighted(frame,1,canvas,1,0)
     cv2.imshow('Hand Detection ',combined)
- 
+   
     key = cv2.waitKey(30) & 0xFF
     if key == ord('q'):
         break
-    if key == ord('r'): color = (0, 0, 255)    # red
+    if key == ord('r'):
+        color = (0, 0, 255)    # red
+        c1='red'
+        # cv2.putText(frame, "R=Red",
+        #     (80, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2) 
+    
     if key == ord('g'): color = (0, 255, 0)    # green
     if key == ord('b'): color = (255, 0, 0)    # blue
     if key == ord('w'): color = (255, 255, 255) # white
