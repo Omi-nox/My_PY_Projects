@@ -5,6 +5,10 @@ model=YOLO('yolov8n.pt') # nano model creation - small , fast, accurate
 
 cap=cv2.VideoCapture(0) #0= default webcam
 
+# 2. Frame ka Size barha kar HD (1280x720) karein
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
 # objects we consider as potential threats
 threat_objects = ["knife", "scissors"]
 thrt_counter=0
