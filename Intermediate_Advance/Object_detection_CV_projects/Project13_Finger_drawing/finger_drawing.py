@@ -100,13 +100,16 @@ while True:
         cv2.putText(frame, "R=Red",
             (80, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2) 
         cv2.putText(frame, "G=Green B=Blue G=White S=save Q=Quit",
-            (150, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2) 
+            (155, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2) 
     elif c1=='green':
           cv2.putText(frame, "G=Green",
             (80, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2) 
           cv2.putText(frame, "R=Red B=Blue G=White S=save Q=Quit",
-            (150, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2) 
-
+            (155, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2) 
+    elif c1=='blue':
+        cv2.putText(frame,'B=Blue',(80,30),cv2.FONT_HERSHEY_SIMPLEX,0.6,(255,0,0),2)
+        cv2.putText(frame, "R=Red G=Green G=White S=save Q=Quit",
+            (155, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2) 
     else:
         cv2.putText(frame, "R=Red G=Green B=Blue G=White S=save Q=Quit",
             (80, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2)  
@@ -122,8 +125,13 @@ while True:
     if key == ord('g'):
         color=(0, 255, 0)
         c1='green'
-        # cv2.putText(frame, "R=Red",
-        #     (80, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2) 
+    if key== ord('b'):
+        color=(255,0,0)
+        c1='blue'
+    if key==ord('w'):
+        color=(255,255,255)
+        c1='white'
+    
     
     if key == ord('g'): color = (0, 255, 0)    # green
     if key == ord('b'): color = (255, 0, 0)    # blue
