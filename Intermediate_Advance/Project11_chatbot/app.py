@@ -35,7 +35,7 @@ def home():
 
 @app.route('/chat',methods=['POST'])
 def chat():
-    msg=request.form.get('message')
+    msg=request.form.get('message') 
     ask_ai(msg)
     return redirect(url_for('home'))
 
