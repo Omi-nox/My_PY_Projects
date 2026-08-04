@@ -50,62 +50,95 @@ Example: Aage chal kar jab hum likhenge cam_label.setAlignment(Qt.AlignCenter), 
 
 ### important concepts and logic :
 **🔥 1. Kya setCentralWidget kisi bhi widget ko main container bana deta hai?**
+
 Ji haan, bilkul!
+
 **QMainWindow (jo hamari main window hai)** ke paas pehle se aik khali slot hota hai jise wo "Central Area" kehta hai. Jab tum likhte ho self.setCentralWidget(any_widget), to tum PyQt5 ko kehte ho ke "Bhai, is pooray khali slot par is naye widget ko bitha do aur isko main container bna kar do."
+
 Humne QWidget ko central banaya kyunki wo aik bilkul blank canvas hota hai jiske andar hum layouts laga kar mazeed widgets (Left, Center, Right panels) daal sakte hain.
+
 **🎨 2. Yeh setStyleSheet, setFixedWidth, setAlignment properties kya hain aur kahan se aati hain?**
 Yeh saari properties PyQt5 ki built-in functions (methods) hain.
-QWidget (Parent Class): ***setFixedWidth(), setFixedHeight(), aur setStyleSheet()*** jaisi cheezein generic hain. Yeh har us widget par available hoti hain jo QWidget se banta hai (chahe wo button ho, label ho, ya khali panel).
+
+QWidget (Parent Class): 
+
+***setFixedWidth(), setFixedHeight(), aur setStyleSheet()*** jaisi cheezein generic hain. Yeh har us widget par available hoti hain jo QWidget se banta hai (chahe wo button ho, label ho, ya khali panel).
 Specific Properties: ***setAlignment()***sirf QLabel ya QLineEdit (text/display elements) par hota hai kyunki button ya khali panel ke andar ke text ko align karne ki logic unke apne paas hoti hai.
 Hum inhein main_layout par nahi laga sakte kyunki layout koi visible cheez (widget) nahi hai, wo sirf aik invisible manager hai jo widgets ki jagah decide karta hai. Styling aur dimensions humesha visible widgets par lagti hain.
+
 **🌐 3. Yeh CSS kahan se aa rahi hai? Kya hum HTML/CSS se apps bana sakte hain?**
+
 PyQt5 ke andar aik feature hota hai jise QSS (Qt Style Sheets) kehte hain. Yeh 95% bilkul web wali standard CSS ki tarah hi kaam karti hai!
+
 Agar tumhein HTML/CSS aati hai, to tumhare liye PyQt5 ko modern aur killer look dena bacchon ka khel ban jayega (jaise humne #111 aur border-radius: 10px use kiya).
+
 HTML ka use: Tumne notice kiya hoga add_message function mein humne <span> tags use kiye hain! PyQt5 ke labels aur text boxes HTML tags ko bhi support karte hain, isliye hum chat ka color aur font HTML se control kar pa rahe hain.
+
 **🧠 4. Sab se bada sawal: Kahin simple variable (cam_label) aur kahin self.cam_display kyun?**
+
 Yeh Scope (Aukaat) ka farq hai brother! OOPs ka sab se main rule:
 Simple Variable (cam_label): Yeh variable sirf __init__ constructor ke andar hi paida hota hai aur wahin khatam ho jata hai. Chunkeh humne camera ka title sirf aik baar likh kar chor dena hai, pure project mein isko kabhi dubara change nahi karna, isliye iske sath self. lagane ki zaroorat nahi hai.
+
 self. ke sath (self.cam_display): Jab hum kisi variable ke sath self. laga dete hain, to wo poori Class ki property ban jata hai. Iska matlab hai ke hum is variable ko class ke kisi bhi aur function (jaise aage chal kar opencv wale function) mein direct access aur update kar sakte hain. Chunkeh camera feed real-time mein update hogi, isliye iska self. ke sath hona zaroori tha taake dusre functions isko pehchan sakein.
 ## 🧩 Snippet 2 — The Main Window
 Is part mein hum seekhenge ke aik poori khaali window ko different areas (Left, Center, Right panels) mein kaise organize kiya jata hai. Iske liye hum use karenge Central Widget aur Main Horizontal Layout.
+
 * **central = QWidget():** QMainWindow (jo hamari main window hai) ke paas pehle se aik khali screen hoti hai. Lekin us par direct designing nahi ki ja sakti. Hamein aik generic container element chahiye hota hai jise Central Widget kehte hain. Yeh samajh lo ke yeh aik khali canvas (board) hai jo humne window ke upar chipka diya hai taake ab saari cheezein iske upar set ho sakein.
+
 * **self.setCentralWidget(central)** se humne window ko bata diya ke bhai, ab se tumhara main center area yahi central widget hai.
+
 * **main_layout = QHBoxLayout(central):**QHBoxLayout (Horizontal Layout): Yeh sab se important concept hai! Horizontal ka matlab hota hai left-to-right (letao hua). Yeh layout apne andar aane wali tamam cheezon (widgets) ko ek ke baad ek, left se right ki taraf line mein lagata jata hai.
+
 * **Chunkeh hamari ARIA OS mein 3 panels hain:** Left (Camera), Center (Chat), aur Right (System Stats), isliye humne Horizontal Layout chuna taake ye teeno panels side-by-side fit ho sakein. (central) likhne ka matlab hai ke yeh layout hamare canvas par apply ho jaye.
+
 * **main_layout.setSpacing(10):**Yeh teeno panels ke darmiyan 10 pixels ka gap (fasla) rakhega taake panels aapas mein chipke na rahein aur interface neat lagay.
+
 * **main_layout.setContentsMargins(10, 10, 10, 10):**Yeh window ke charon kinarom (Left, Top, Right, Bottom) se 10 pixels ka margin (space) chorta hai, bilkul CSS ki tarah, taake panels bilkul screen ke kinarom se touch na ho rahe hon.
+
 * **left_layout.addStretch():**
 Yeh aik invisible spring (spacer) ki tarah kaam karta hai. Yeh ooper ke saare widgets (labels) ko ooper push kar deta hai aur baki bachi hui saari khali jagah ko khud gher leta hai, taake hamara design bikhray na.
+
 ## 🧩 Snippet 3 — The Main Window
 Part 3: Left Panel (Camera Feed) Setup
 ## 🧩 Snippet 4 — The Main Window
 Part 4: Center Panel (Chat & Input Area) Setup
 same code workinng snippet like left panel ke lia bnaya hmny 
+
 **self.chat_display = QTextEdit() aur setReadOnly(True):**
 ye chat cannvas pe apply horha h  QTextEdit ek chat display area ha 
 QTextEdit multi-line text show aur input karne ke liye use hota hai. Humne .setReadOnly(True) kiya hai taake user khud chat history ke andar ghus kar text delete ya edit na kar sake. Yeh area sirf messages dikhane ke liye hai.
 self. lagaya hai kyunki hume functions ke zariye is mein text append (add) karna padega.
+
 **self.text_input = QLineEdit()**:
 QLineEdit sirf single-line text input field ke liye hota hai (jaise search bars ya input fields hoti hain). Yahan user apna message type karega.
+
 **returnPressed.connect()** — Enter key triggers send
+
 **clicked.connect()** — button click triggers function
+
 **Pseudo-classes in CSS (QPushButton:hover):**
+
 QSS/CSS ka magical feature! Jab mouse cursor button ke upar aayega (:hover), to uska background color light blue ya light red ho jayega. Yeh application ko super-interactive responsive look deta hai.
 ## 🧩 Snippet 5 — The Main Window
 Part 5: Right Panel (System Status) Setup
+
 * **🧠 Logic aur Concepts Easy Steps Mein:**
 setFixedWidth(250):
 Left panel 350px ka tha, center panel flexible hai (jitni screen bachegi wo gher lega), aur right panel ko humne 250 pixels par fix kar diya kyunki system status dikhane ke liye itni width kaafi hai.
 * **self.status_items = QLabel(...):**
+
 Yahan humne aik hi QLabel ke andar multiline text (\n yaani new line use kar ke) daal diya hai. Iske sath self. lagaya hai kyunki aage chal kar jab hum asal modules connect karenge (jaise camera off ho to red dot ho jaye), to hum isi label ko code se update karenge!
 ## 🧩 Snippet 6 — The Main Window
 Part 6: Chat Functions (add_message aur send_message)
 Apni class ke constructor (def __init__(self):) ke baahar aur neche, yeh do functions add karo:
 ## 🧩 Snippet 7 — The Main Window
 Last Phase: Connecting Signals (Events Binding)
+
 ### 🔗 Event Listeners / Signals Connection
+
         self.text_input.returnPressed.connect(self.send_message)
         send_btn.clicked.connect(self.send_message)
+
 Jaise hi trigger hota hai, control send_message(self) function ke paas jata hai:
 
 text = self.text_input.text().strip(): Yeh line input field (QLineEdit) ke andar ghusti hai aur .text() function ke zariye jo kuch bhi tumne type kiya hota hai, us pure text ko khinch kar bahar nikalti hai aur text naam ke variable mein save kar deti hai. .strip() aage peeche ki faltu spaces saaf kar deta hai.
@@ -233,6 +266,7 @@ from PyQt5.QtGui import QImage
 ```
 PyQt5 ko image screen par draw karne ke liye computer ki memory mein exact space chahiye hoti hai. Woh is formula se pata lagata hai ki: "Acha, image 640 pixels chori (w) hai aur har pixel ke paas 3 bytes (ch) ka color data hai, toh ek line mein total 640 * 3 = 1920 bytes ka data chal raha hai."
 camera on and stop 
+
 axha phly frame ana bnd kro by disconnect , phr stop phr clear kro 
 on krny ke lia dosra thread na bnao start sy dosra bnta without connect,phly usko connect kro  or phr start  
 
@@ -244,7 +278,9 @@ on krny ke lia dosra thread na bnao start sy dosra bnta without connect,phly usk
 🧩 Snippet 1 — The Main Window
 🧩 Snippet 1 — The Main Window
 * **1. if __name__ == "__main__":** block kya hai?Yeh Python ka aik standard protocol hai jo yeh check karta hai ke kya yeh file direct run ki ja rahi hai ya kisi aur file mein import ho rahi hai.
+
 * **app = QApplication(sys.argv):** Yeh poori application ka Engine hai. sys.argv ka matlab hai command line arguments (agar hum terminal se koi parameters pass karein). Yeh engine background mein clicks, window resizing, aur keyboard keypresses ko sunta aur handle karta hai. Iske bina GUI chal hi nahi sakti.
+
 * **Aur sys.exit()** ka kaam yeh hai ke jab tum window ka [X] (Close) button dabao, to yeh computer ke Operating System ko clean signal bheje ke "Bhai program poora close ho chuka hai, memory khaali kar do."
 
 
