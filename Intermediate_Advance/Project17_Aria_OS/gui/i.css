@@ -1,0 +1,6 @@
+.ad{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-right: 5px;
+}
