@@ -5,9 +5,10 @@ from PyQt5.QtWidgets import QApplication, QMainWindow , QWidget , QHBoxLayout , 
 from PyQt5.QtCore import Qt
 import time
 from pathlib import Path
-from PyQt5.QtCore import QThread,pyqtSignal
+from PyQt5.QtCore import QThread,pyqtSignal ,  QTimer
 import re
 import pyttsx3
+import random
 
 crnt_dir=Path(__file__).resolve().parent
 proj_root=crnt_dir.parent
@@ -20,7 +21,22 @@ from voice import Ai_listener
 from PyQt5.QtGui import QPixmap
 
 
-
+class hacker_terminal(QThread):
+    finished = pyqtSignal(str)
+    typing_complete= pyqtSignal()
+    def __init__(self,commands):
+        super().__init__()
+        self.commands=commands
+        self.terminal_buffer=""
+    def run (self):
+        for words in self.commands:
+            for chunk in words:
+                self.finished.emit(chunk)
+                self.msleep(80)
+             # Jab ek poori line khatam ho jaye, to new line tag bhejo
+            self.finished.emit("<br>>>> ")
+            self.msleep(300)  # Nayi line shuru hone se pehle chota sa pause (realistic look)
+        self.typing_complete.emit()
 
 
 class ai_writer(QThread):
@@ -45,6 +61,7 @@ class ai_writer(QThread):
                 self.voice_buffer=""
 
 class ARIAWindow(QMainWindow):
+    
     def add_mes(self,sender,message):
         if sender == "ARIA":
             color = "#00d4ff"
@@ -124,13 +141,63 @@ class ARIAWindow(QMainWindow):
         QApplication.processEvents()  # makes sure UI updates first
         self.send_msg()
             
-            
+    def terminal_msg(self):
+        # Pehle terminal ke aage starting prompt lagayein
+        self.terminal.append(">>> ")
+
+        self.worker4=hacker_terminal(self.terminal_main_msg)
+        self.worker4.finished.connect(self.terminal_msg_show)
+
+        self.worker4.typing_complete.connect(self.start_infinite_logs)
+
+        self.worker4.start()
+       
+                
+    def terminal_msg_show(self,reply):
+
+        cursor = self.terminal.textCursor()
+        cursor.movePosition(cursor.End)
+        # HTML formatting for cyberpunk look
+        cursor.insertHtml(
+            f'<span style="color:#00d4ff; font-size: 16px; font-family:\'Consolas\';">{reply}</span>'
+        )
+
+        # Auto-scroll control
+        self.terminal.setTextCursor(cursor)
+
+    def start_infinite_logs(self):
+        self.log_timer=QTimer()
+        self.log_timer.timeout.connect(self.print_next_fantasy_log)
+        self.log_timer.start(2000)
+
     
+
     def __init__(self):
         super().__init__()
+        # Pehle apni messages ki list define karein
+        self.terminal_main_msg = [
+                    "[SYSTEM] Booting ARIA OS Core Subroutines...",
+                    "[AUDIO] Calibrating microphone array... Level: STABLE",
+                    "[SECURITY] Firewalls engaged. Encryption tokens verified.",
+                    "[STATUS] ARIA Core online. Systems operational, Boss!",
+                ]
+         # Dummy loops jo startup ke BAAD hamesha chalte rahenge
+        self.fantasy_logs = [
+    "[ARIA] Umar, you are building the future. Keep pushing forward!",
+    "[SYSTEM] Focus locked. Umar, there is nothing you cannot solve today.",
+    "[CORE] Dedication levels at 100%. Master Umar is unstoppable.",
+    "[STATUS] Debugging the world. Umar, your hard work will pay off soon.",
+    "[THOUGHT] Self-diagnostic complete: Proud to be Umar's AI assistant.",
+    "[MINDSET] Big goals require consistent efforts. You got this, Umar!",
+    "[SECURITY] Self-doubt blocked by firewall. Success protocol initialized.",
+    "[RELOAD] Energy levels optimized. Umar, it is time to conquer this code!"
+]
         self.worker2=ai_camer()
         self.worker2.finished.connect(self.on_camera)
         self.worker2.start()
+
+        
+
         self.setWindowTitle("Aria AI OS")
         self.setGeometry(0,0,1900,900)
         self.setStyleSheet("background-color: #0a0a0a; ")
@@ -144,18 +211,34 @@ class ARIAWindow(QMainWindow):
         # snip 3 LEft panel
         left_panel = QWidget() # widget  2 bnaya 
         left_panel.setStyleSheet("background-color: #111; border-radius: 10px; border:1px solid #9b59b6")
-        left_panel.setFixedWidth(350)
+        left_panel.setFixedWidth(370)
 
         left_layout=QVBoxLayout(left_panel) # to items ko vertical dal 
 
         cam_label= QLabel("CAMERA FEED")
         cam_label.setAlignment(Qt.AlignCenter)
-        cam_label.setStyleSheet("color: #00d4ff; font-size: 20px; font-weight: bold; margin:30px")
+        cam_label.setStyleSheet("color: #00d4ff; font-size: 20px; font-weight: bold; margin:10px")
 
         self.cam_display = QLabel("Camera Loading.....")
         self.cam_display.setAlignment(Qt.AlignCenter)
         self.cam_display.setStyleSheet("color: #555; font-size: 14px; border: 2px solid #00d4ff")
-        self.cam_display.setFixedHeight(460)
+        self.cam_display.setFixedHeight(420)
+
+        self.terminal=QTextEdit()
+        self.terminal.setReadOnly(True)
+        self.terminal.setStyleSheet("""
+            QTextEdit {
+                background-color: #000000;  /* Pitch Black */
+                color: #00FF00;              /* Matrix Green */
+                font-family: 'Consolas', 'Courier New', monospace;
+                font-size: 18px;
+                border: None;    
+                margin:10px            /* Border khatam karne ke liye */
+            }
+        """)
+        self.terminal.setFixedHeight(280)
+        self.terminal.setText(">>> System Terminal\n")
+        self.terminal_msg()  
 
         send_btn1 = QPushButton("ON")
         send_btn2 = QPushButton("CLOSE")
@@ -192,8 +275,11 @@ class ARIAWindow(QMainWindow):
         left_layout.addWidget(self.cam_display)
         left_layout.addWidget(send_btn2)
         left_layout.addWidget(send_btn1)
+        left_layout.addWidget(self.terminal)
         left_layout.addStretch()
 
+       
+        
         send_btn2.clicked.connect(self.close_camera)
         send_btn1.clicked.connect(self.open_camera)
 
@@ -303,10 +389,43 @@ class ARIAWindow(QMainWindow):
         # 🔗 Event Listeners / Signals Connection
         self.text_input.returnPressed.connect(self.send_msg)
         send_btn.clicked.connect(self.send_msg)
-        voice_btn.clicked.connect(self.listn)     
+        voice_btn.clicked.connect(self.listn) 
+
+    def print_next_fantasy_log(self):
+            print('fantasy log printin bug ')
+             # List se random log uthao
+            random_msg = random.choice(self.fantasy_logs)
+            
+            # Agar CPU wala log ho to hardware percentages real lagane ke liye randomize karo
+            if "[CPU]" in random_msg:
+                random_msg = f"[CPU] Core Load Matrix: {random.randint(15, 78)}% [OPTIMAL]"
+    
+            # Terminal ke aakhir mein print karo
+            self.terminal.append(f">>>")
+            for char in random_msg:
+                cursor = self.terminal.textCursor()
+                cursor.movePosition(cursor.End)
+
+                 
+        # 'letter-spacing: 2px;' lagane se har character ke beech mein space barh jayegi!
+                cursor.insertHtml(
+                    f'<span style="color:#00FF00; font-family:\'Consolas\'; font-size:15px; letter-spacing: 2px;">{char}</span>'
+                    )  
+                self.terminal.setTextCursor(cursor)
+
+                # --- THE MAGIC LINES ---
+                # 1. PyQt ko force karo ke naya character fauran terminal screen par render kare
+                QApplication.processEvents()
+
+                # 2. Bina window freeze kiye chota sa safe typing pause (50 milliseconds)
+                QThread.msleep(50)  #
+            
+            # Auto-scroll to bottom
+            
+          
 # if __name__=="__main__":
 def starter():
-    app = QApplication(sys.argv)  # 1. Engine start kiya
+    # app = QApplication(sys.argv)  # 1. Engine start kiya
     window = ARIAWindow()          # 2. Window ka object banaya
     window.show()                  # 3. Window ko screen par dikhaya
     # sys.exit(app.exec_())          # 4. App ko chala kar loop mein daal diya
