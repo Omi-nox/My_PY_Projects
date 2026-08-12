@@ -376,7 +376,87 @@ if re.search(r'[.!?\n]', chunk):
     
     self.voice_buffer = ""
 ```
-🧩 Snippet 1 — The Main Window
+## 🧩 Snippet 10 — The Wake up aria 
+***1. make wake.py*** , import libraries then path setup kr 
+```
+crnt_dir=Path(__file__).resolve().parent
+proj_root=crnt_dir.parent
+if str(proj_root) not in sys.path:
+    sys.path.append(str(proj_root))
+
+```
+***2. then class*** thread bna ke 3 signals bna or usme voice ka setup bna or stop function
+```
+def stop(self):
+        self.running=False
+        self.quit()  
+        self.wait()   
+        if not self.wait(1000):  # Wait for 1 second
+            print("Thread did not terminate in time, forcing termination.")
+            self.terminate()  # Forcefully terminate the thread
+
+```
+Kaam: wait(1000) ka matlab hai: "Thread ko 1 second (1000 milliseconds) ka time do ke woh apna kaam safely khatam karke close ho jaye."
+
+Kyun zaroori hai? Agar thread 1 second mein chup chaap band na ho (jaise microphone audio recording mein phansa hua ho), to agli line self.terminate() chalegi jo us phanse hue thread ko forcefully (zabardasti) kill kar degi. Is se program hang nahi hota.
+
+***3. to main_window.py*** me changes kr
+
+starter() function se window kyun return karwaya?
+Reason: Python mein jab aap kisi function ke andar variables banate ho, to function khatam hote hi woh variables memory se delete (Garbage Collect) ho jaate hain.
+
+Agar starter() function window object ko return nahi karega, to MasterController ko pata hi nahi chalega ke kaunsi UI window open hui hai, aur na hi woh use baad mein .close() kar sakega. Return karne se window ka control master center ke paas rehta hai.
+
+Bilkul sahi samjhe aap! Function run hone ke baad Python memory clear kar deta hai. Agar hum window ko kisi class (MasterController) ke variable (self.window) mein save (store) na rakhein, to window ek millisecond ke liye khul kar khud hi gayab/close ho jayegi.
+
+New class banane ka maqsad yeh tha ke ek Controller (Manager) majood ho jo track rakhe ke:
+
+UI pehle se khula hai ya nahi.
+
+UI ko kab screen par laana hai aur kab band karna hai.
+
+***4. window.activateWindow()*** aur window.close() ka kya matlab hai?
+window.activateWindow(): Agar UI pehle se khula hai lekin kisi dusri app (jaise Chrome ya VS Code) ke peeche chup gaya hai, to yeh command GUI ko sab ke upar Front / Focus mein le aati hai.
+
+window.close(): Yeh UI ki window ko screen se hataaney aur band karne ke liye use hota hai.
+
+sys.exit(app.exec_()) vs window.close():
+
+sys.exit(app.exec_()) poori application aur Python script ko hi kill kar deta hai.   # 4. App ko chala kar loop mein daal diya iska ye bhi ek mtlb ha 
+
+
+window.close() sirf GUI window ko hide/close karta hai, jabke background mein hamara Wake Listener (Python script) chal raha hota hai.
+
+***5. QApplication aur signal.signal(signal.SIGINT, signal.SIG_DFL) kyun likha?***
+QApplication: PyQt5 ka main engine hota hai. Iske bina koi bhi PyQt signal, event, ya window kaam nahi kar sakti. Yeh Windows OS se connect hota hai taake buttons, graphics, aur signals handle ho sakein.
+
+signal.signal(signal.SIGINT, signal.SIG_DFL):
+
+Normal Python scripts mein jab aap terminal par Ctrl + C dabate ho, to script band ho jati hai.
+
+Lekin PyQt5 jab chal raha hota hai, to woh Ctrl + C ke signal ko block kar deta hai aur terminal band nahi hota.
+
+Yeh snippet OS ko allow karta hai ke terminal se Ctrl + C dabaane par PyQt application aur Thread turant (instantly) stop ho jayein. Testing ke waqt yeh bohot kaam aata hai!
+```
+if __name__ == "__main__":
+    # Terminal par Ctrl + C se complete kill karne ke liye
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+    app = QApplication(sys.argv)
+
+    controller = MasterController()
+    waki = WakeThread()
+
+    # Signals Connection
+    waki.open_ui_signal.connect(controller.open_ui)
+    waki.already_here_signal.connect(controller.handle_already_here)
+    waki.close_ui_signal.connect(controller.close_ui)
+
+    waki.start()
+
+    sys.exit(app.exec_())
+```
+
 🧩 Snippet 1 — The Main Window
 🧩 Snippet 1 — The Main Window
 🧩 Snippet 1 — The Main Window
