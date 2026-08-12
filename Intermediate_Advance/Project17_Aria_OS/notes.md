@@ -208,6 +208,13 @@ class ai_writer(QThread):
         self.chat_display.setTextCursor(cursor)
     # ===================================================================
 ```
+self.terminal.setTextCursor(cursor)
+
+Kya karta hai: Jo cursor humne end par move kiya tha, use wapis terminal widget par apply kar deta hai.Asal Faida 
+
+(Auto-Scroll): Is line ka sab se bara faida yeh hai ke jab text barhta jata hai, to yeh terminal window ko 
+
+automatically niche scroll (Auto-scroll to bottom) karta rehta hai taake naya message hamesha screen par nazar aaye.
 ### 🧩 Snippet 8 — Camera Setup
 ```
 import cv2
@@ -394,6 +401,20 @@ def stop(self):
         if not self.wait(1000):  # Wait for 1 second
             print("Thread did not terminate in time, forcing termination.")
             self.terminate()  # Forcefully terminate the thread
+then if main ke nechy qk ye stop wake thread class ke to ye u hoga 
+# 1. Objects Banayein
+    wake_thread = WakeThread()
+    controller = MasterController(wake_thread)
+
+   def force_stop_app():
+    print("\n🛑 Termination command detected! Stopping threads cleanly...")
+    
+    # 1. Pehle background thread ko bolo ke apna loop roke
+    if 'wake_thread' in globals():
+        wake_thread.stop()  # Isme self.running=False, self.quit(), self.wait() hoga
+        
+    # 2. Ab application ko clean exit do
+    QApplication.quit()
 
 ```
 Kaam: wait(1000) ka matlab hai: "Thread ko 1 second (1000 milliseconds) ka time do ke woh apna kaam safely khatam karke close ho jaye."
@@ -456,7 +477,41 @@ if __name__ == "__main__":
 
     sys.exit(app.exec_())
 ```
+The Problem
 
+You have QApplication created in TWO places:
+
+python
+# main_window.py starter()
+app = QApplication(sys.argv)  # ❌ creates app here
+
+# wake_word.py
+app = QApplication(sys.argv)  # ❌ creates ANOTHER app = crash
+
+Only ONE QApplication can exist in the entire program.
+sys.exit             also one place  gui elements 
+### app.exec_() within clean exit of sys.exit
+Yeh sirf GUI window ka loop nahi, balki poori application ke events (tamam PyQt threads, signals, mouse events, voice signals) ko active aur zinda rakhta hai. Agar yeh loop na chale, to window ek millisecond mein khul kar freeze ya band ho jayegi, aur background thread ka signal UI tak pohnch hi nahi payega.
+### sirf aria gui close ho naky puri script
+Jab aapki Last/Only Window close hoti hai, to PyQt pooray event loop (app) ko khud hi exit/quit kar deta hai!
+
+Isi wajah se GUI ke sath aapka background WakeThread bhi completely crash/stop ho jata hai.
+Step 1: wake.py ke start mein setQuitOnLastWindowClosed ko False karo
+```
+if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+    app = QApplication(sys.argv)
+    
+    # 💥 YEH LINE ADD KARO: Window band hone par poori app exit nahi hogi!
+    app.setQuitOnLastWindowClosed(False)
+
+    wake_thread = WakeThread()
+    controller = MasterController(wake_thread)
+    
+    # ... baki code wahi purana ...
+```
+Step 2: close_ui method mein close() ki bajaye hide() use karo
 🧩 Snippet 1 — The Main Window
 🧩 Snippet 1 — The Main Window
 🧩 Snippet 1 — The Main Window
