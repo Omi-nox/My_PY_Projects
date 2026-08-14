@@ -215,6 +215,45 @@ Kya karta hai: Jo cursor humne end par move kiya tha, use wapis terminal widget 
 (Auto-Scroll): Is line ka sab se bara faida yeh hai ke jab text barhta jata hai, to yeh terminal window ko 
 
 automatically niche scroll (Auto-scroll to bottom) karta rehta hai taake naya message hamesha screen par nazar aaye.
+***best stylig cursor***
+```
+self.chat_Terminal=QTextEdit()
+        self.chat_Terminal.setReadOnly(True)
+        self.chat_Terminal.setStyleSheet("""
+                QTextEdit{
+                background-color: #000000;  /* Pitch Black */
+                 color: #00FF00;              /* Matrix Green */
+                 border: None;
+                 padding: 10px 10px;
+                 font-size: 20px;
+                 font-family: 'Consolas', 'Courier New', monospace;
+                 line-height: 150%;
+                }
+        """)
+     self.chat_Terminal.clear()
+        self.chat_Terminal.append(f">>> for Admin")
+        for words in random_msg:
+            self.chat_Terminal.append(f">>> for Admin ")
+            cursor = self.chat_Terminal.textCursor() // crsor grabbing
+            cursor.movePosition(cursor.End) //postion
+    
+             # Pehle style set karlein (sirf ek dafa)
+            fmt = cursor.charFormat()
+            fmt.setFontFamily("Consolas")
+            fmt.setFontPointSize(15)
+            # Note: letter-spacing plain text format mein thodi different apply hoti hai
+    
+            for chnk in words:
+                cursor.insertText(chnk, fmt) # HTML ki jagah plain text use karein
+                self.chat_Terminal.setTextCursor(cursor) //auto scroll conntrol
+                self.chat_Terminal.ensureCursorVisible()
+                QApplication.processEvents()
+                QThread.msleep(50) # Har character ke liye 30ms ka chota pause
+        
+            QThread.msleep(300) # Line khatam hone par pause
+
+
+```
 ### 🧩 Snippet 8 — Camera Setup
 ```
 import cv2
