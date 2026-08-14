@@ -23,7 +23,6 @@ from PyQt5.QtGui import QPixmap
 
 class hacker_terminal(QThread):
     finished = pyqtSignal(str)
-    typing_complete= pyqtSignal()
     def __init__(self,commands):
         super().__init__()
         self.commands=commands
@@ -36,9 +35,13 @@ class hacker_terminal(QThread):
              # Jab ek poori line khatam ho jaye, to new line tag bhejo
             self.finished.emit("<br>>>> ")
             self.msleep(300)  # Nayi line shuru hone se pehle chota sa pause (realistic look)
-        self.typing_complete.emit()
-
-
+     
+class admin_terminal(QThread):
+    finished= pyqtSignal()
+    def __int__(self):
+        pass
+    def run (self):
+        self.finished.emit()    
 class ai_writer(QThread):
     finished = pyqtSignal(str)
     
@@ -148,10 +151,17 @@ class ARIAWindow(QMainWindow):
         self.worker4=hacker_terminal(self.terminal_main_msg)
         self.worker4.finished.connect(self.terminal_msg_show)
 
-        self.worker4.typing_complete.connect(self.start_infinite_logs)
+        # self.worker4.typing_complete.connect(self.start_infinite_logs)
 
         self.worker4.start()
-       
+
+    def admin_terminal_msg(self):
+
+        self.chat_Terminal.append(">>> For Admin")   
+
+        self.worker5=admin_terminal()
+        self.worker5.finished.connect(self.start_infinite_logs)
+        self.worker5.start()
                 
     def terminal_msg_show(self,reply):
 
@@ -168,7 +178,7 @@ class ARIAWindow(QMainWindow):
     def start_infinite_logs(self):
         self.log_timer=QTimer()
         self.log_timer.timeout.connect(self.print_next_fantasy_log)
-        self.log_timer.start(2000)
+        self.log_timer.start(20000)
 
     
 
@@ -187,10 +197,8 @@ class ARIAWindow(QMainWindow):
     "[SYSTEM] Focus locked. Umar, there is nothing you cannot solve today.",
     "[CORE] Dedication levels at 100%. Master Umar is unstoppable.",
     "[STATUS] Debugging the world. Umar, your hard work will pay off soon.",
-    "[THOUGHT] Self-diagnostic complete: Proud to be Umar's AI assistant.",
     "[MINDSET] Big goals require consistent efforts. You got this, Umar!",
     "[SECURITY] Self-doubt blocked by firewall. Success protocol initialized.",
-    "[RELOAD] Energy levels optimized. Umar, it is time to conquer this code!"
 ]
         self.worker2=ai_camer()
         self.worker2.finished.connect(self.on_camera)
@@ -231,9 +239,9 @@ class ARIAWindow(QMainWindow):
                 background-color: #000000;  /* Pitch Black */
                 color: #00FF00;              /* Matrix Green */
                 font-family: 'Consolas', 'Courier New', monospace;
-                font-size: 18px;
+                font-size: 20px;
                 border: None;    
-                margin:10px            /* Border khatam karne ke liye */
+                margin:10px ;           /* Border khatam karne ke liye */
             }
         """)
         self.terminal.setFixedHeight(280)
@@ -310,7 +318,26 @@ class ARIAWindow(QMainWindow):
             
             }
         """)
+
+        self.chat_Terminal=QTextEdit()
+        self.chat_Terminal.setReadOnly(True)
+        self.chat_Terminal.setStyleSheet("""
+                QTextEdit{
+                background-color: #000000;  /* Pitch Black */
+                 color: #00FF00;              /* Matrix Green */
+                 border: None;
+                 padding: 10px 10px;
+                 font-size: 20px;
+                 font-family: 'Consolas', 'Courier New', monospace;
+                 line-height: 150%;
+                }
+        """)
+        
         center_layout.addWidget(self.chat_display)
+        center_layout.addWidget(self.chat_Terminal)
+        self.admin_terminal_msg()
+
+        
 
         input_layout = QHBoxLayout()
         self.text_input = QLineEdit()
@@ -392,35 +419,37 @@ class ARIAWindow(QMainWindow):
         voice_btn.clicked.connect(self.listn) 
 
     def print_next_fantasy_log(self):
-            print('fantasy log printin bug ')
+        print('fantasy log printin bug ')
              # List se random log uthao
-            random_msg = random.choice(self.fantasy_logs)
+        random_msg = self.fantasy_logs
             
             # Agar CPU wala log ho to hardware percentages real lagane ke liye randomize karo
-            if "[CPU]" in random_msg:
-                random_msg = f"[CPU] Core Load Matrix: {random.randint(15, 78)}% [OPTIMAL]"
+        if "[CPU]" in random_msg:
+            random_msg = f"[CPU] Core Load Matrix: {random.randint(15, 78)}% [OPTIMAL]"
     
-            # Terminal ke aakhir mein print karo
-            self.terminal.append(f">>>")
-            for char in random_msg:
-                cursor = self.terminal.textCursor()
-                cursor.movePosition(cursor.End)
-
-                 
-        # 'letter-spacing: 2px;' lagane se har character ke beech mein space barh jayegi!
-                cursor.insertHtml(
-                    f'<span style="color:#00FF00; font-family:\'Consolas\'; font-size:15px; letter-spacing: 2px;">{char}</span>'
-                    )  
-                self.terminal.setTextCursor(cursor)
-
-                # --- THE MAGIC LINES ---
-                # 1. PyQt ko force karo ke naya character fauran terminal screen par render kare
+        # Terminal ke aakhir mein print karo
+        self.chat_Terminal.clear()
+        self.chat_Terminal.append(f">>> for Admin")
+        for words in random_msg:
+            self.chat_Terminal.append(f">>> for Admin ")
+            cursor = self.chat_Terminal.textCursor()
+            cursor.movePosition(cursor.End)
+    
+             # Pehle style set karlein (sirf ek dafa)
+            fmt = cursor.charFormat()
+            fmt.setFontFamily("Consolas")
+            fmt.setFontPointSize(10)
+            # Note: letter-spacing plain text format mein thodi different apply hoti hai
+    
+            for chnk in words:
+                cursor.insertText(chnk, fmt) # HTML ki jagah plain text use karein
+                self.chat_Terminal.setTextCursor(cursor)
+                self.chat_Terminal.ensureCursorVisible()
                 QApplication.processEvents()
+                QThread.msleep(80) # Har character ke liye 30ms ka chota pause
+        
+            QThread.msleep(600) # Line khatam hone par pause
 
-                # 2. Bina window freeze kiye chota sa safe typing pause (50 milliseconds)
-                QThread.msleep(50)  #
-            
-            # Auto-scroll to bottom
             
           
 # if __name__=="__main__":
